@@ -22,24 +22,24 @@ private:
             name = s; // take in string name as parameter
             prev = p;
             next = n;
-
-            cout << name << " joined the line";
         }
 
-        //default constructor
+        // default constructor
         Customer()
         {
-            string buf; 
-            ifstream in("names.txt"); //open names.txt file
-            if(!in.good())
+            ifstream in("names.txt"); // open names.txt file
+            if (!in.good())
             {
                 cout << "ERROR opening text file to read names in.";
             }
             else
             {
-                int randName = (rand()%99)+1; //
+                int randName = (rand() % 99); // generate random 0-98 int number to ignore in txt file
+                for (int i = 0; i < randName; i++)
+                    in.ignore(100, '\n');
+                getline(in, name); // get string name after random ignore, assign directly to Customer
             }
-            name = s; // take in string name as parameter
+
             prev = nullptr;
             next = nullptr;
 
@@ -57,7 +57,7 @@ public:
         tail = nullptr;
     }
 
-    void insert_after(int value, int position)
+    void insert_after(string s, int position)
     {
         if (position < 0)
         {
@@ -65,7 +65,7 @@ public:
             return;
         }
 
-        Customer *newCustomer = new Customer(value);
+        Customer *newCustomer = new Customer(s);
         if (!head)
         {
             head = tail = newCustomer;
@@ -272,7 +272,9 @@ public:
 
 // prototypes
 void simulateMinute(DoublyLinkedList);
+string getName();
 
+// main***********************************
 int main()
 {
     // my code
@@ -281,10 +283,13 @@ int main()
 
     DoublyLinkedList list; // intialize doubly-linked list
 
-    for (int i = 0; i < INITIAL_CUSTOMERS; i++) // when starting, fill with 5 initial customers
-        list.push_back();
+    cout << "Store opens: \n"; //begin application
 
-    cout << "Resulting line: ";
+
+    for (int i = 0; i < INITIAL_CUSTOMERS; i++) // when starting, fill with 5 initial customers
+        list.push_back(getName());
+
+    cout << "Resulting line: \n";
     list.print();
 
     for (int i = 0; i < MINUTES; i++)
@@ -295,6 +300,29 @@ int main()
     return 0;
 }
 
+void simLoop()
+{
+    
+}
+
 void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 {
+}
+
+string getName() // gets a random name from the txt file
+{
+    string buf;
+    ifstream in("names.txt"); // open names.txt file
+    if (!in.good())
+    {
+        cout << "ERROR opening text file to read names in.";
+    }
+    else
+    {
+        int randName = (rand() % 99); // generate random 0-98 int number to ignore in txt file
+        for (int i = 0; i < randName; i++)
+            in.ignore(100, '\n');
+        getline(in, buf); // get string name after random ignore, assign directly to Customer
+    }
+    return (buf);
 }
