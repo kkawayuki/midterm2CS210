@@ -4,7 +4,7 @@
 using namespace std;
 
 const int MIN_NR = 10, MAX_NR = 99, MIN_LS = 5, MAX_LS = 20;
-int dllSize = 0; //global tracker for size of Doubly Linked, could also be represented as static var
+int dllSize = 0; // global tracker for size of Doubly Linked, could also be represented as static var
 
 class DoublyLinkedList
 {
@@ -13,18 +13,20 @@ private:
     {
         // fields of customer
         string name;
-
+        bool vip; //false by default
         Customer *prev;
         Customer *next;
 
         // constructor
         Customer(string s, Customer *p = nullptr, Customer *n = nullptr)
         {
+            if((rand()%100+1) < 10) 
+                bool vip = true;
             name = s; // take in string name as parameter
             prev = p;
             next = n;
 
-            cout << '\t' << name << " joined the line\n";
+            cout << '\t' << name << " joined the line\n"; // joined the line in constructor call
         }
 
         // // default constructor
@@ -169,6 +171,7 @@ public:
         Customer *tempPrev = temp->prev;
         tempPrev->next = temp->next;
         temp->next->prev = tempPrev;
+        cout << '\t' << temp->name << " left the line\n";
         delete temp;
         dllSize--;
     }
@@ -184,7 +187,6 @@ public:
             newCustomer->prev = tail;
             tail = newCustomer;
         }
-        cout << s << " joined the line";
         dllSize++;
     }
 
@@ -220,7 +222,7 @@ public:
         }
         else
             head = tail = nullptr;
-        cout << temp->name << " is served";
+        cout << '\t' << temp->name << " is served\n";
         delete temp;
         dllSize--;
     }
@@ -241,7 +243,7 @@ public:
         }
         else
             head = tail = nullptr;
-        cout << temp->name << " left the line";
+        cout << '\t' << temp->name << " left the line\n";
         delete temp;
         dllSize--;
     }
@@ -317,20 +319,18 @@ void simLoop(DoublyLinkedList list)
     cout << "Resulting line: \n";
     list.print();
 
-    cout << "size: " << dllSize; 
-
-    // for (int i = 0; i < MINUTES; i++)
-    // {
-    //     cout << "Time step #" << i+2 << ": \n"; //start at time step 2
-    //     simulateMinute(list);
-    // }
+    for (int i = 0; i < MINUTES; i++)
+    {
+        cout << "Time step #" << i + 2 << ": \n"; // start at time step 2
+        simulateMinute(list);
+    }
 }
 
 void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 {
-    // variables representing situations:
+    // independent variables representing situations (there's probably a better way to do this):
+    int a = rand() % 100 + 1, b = rand() % 100 + 1, c = rand() % 100 + 1, d = rand() % 100 + 1, e = rand() % 100 + 1, f = rand() % dllSize + 1; // probabilities for each minute should are independent.
 
-    int a = rand() % 100 + 1, b = rand() % 100 + 1, c = rand() % 100 + 1, d = rand() % 100 + 1, e = rand() % 100 + 1; // probabilities for each minute should are independent.
     // A customer being helped at the beginning of the line and ordering their coffee is 40%
     if (a <= 40)
         list.pop_front(); // help first customer
@@ -345,9 +345,12 @@ void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 
     // Any particular customer can decide they don't want to wait and leave the line: 10%
     if (d <= 10)
-        list.delete_pos(0);
+        list.delete_pos(f); // delete position of random customer
 
     // A VIP (very important person) customer with a Coffee House Gold Card gets to skip the line and go straight to the counter and order: 10%
+    if (e <= 10)
+        //logic for VIP skipping
+    
 }
 
 string randName() // gets a random name from the txt file
