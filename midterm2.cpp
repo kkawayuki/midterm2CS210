@@ -22,6 +22,8 @@ private:
             name = s; // take in string name as parameter
             prev = p;
             next = n;
+
+            cout << '\t' << name << " joined the line\n";
         }
 
         // default constructor
@@ -173,6 +175,7 @@ public:
             newCustomer->prev = tail;
             tail = newCustomer;
         }
+        cout << s << " joined the line"; 
     }
 
     void push_front(string s)
@@ -206,6 +209,7 @@ public:
         }
         else
             head = tail = nullptr;
+        cout << temp->name << " is served"; 
         delete temp;
     }
 
@@ -271,20 +275,26 @@ public:
 };
 
 // prototypes
+void simLoop(DoublyLinkedList);
 void simulateMinute(DoublyLinkedList);
 string getName();
 
 // main***********************************
 int main()
 {
-    // my code
-    const int MINUTES = 20, INITIAL_CUSTOMERS = 5; // 20 loops "minutes"
     srand(time(0));
-
     DoublyLinkedList list; // intialize doubly-linked list
 
-    cout << "Store opens: \n"; //begin application
+    simLoop(list);
 
+    return 0;
+}
+
+void simLoop(DoublyLinkedList list)
+{
+    const int MINUTES = 20, INITIAL_CUSTOMERS = 5; // 20 loops "minutes"
+
+    cout << "Store opens: \n"; // begin application
 
     for (int i = 0; i < INITIAL_CUSTOMERS; i++) // when starting, fill with 5 initial customers
         list.push_back(getName());
@@ -294,19 +304,34 @@ int main()
 
     for (int i = 0; i < MINUTES; i++)
     {
+        cout << "Time step #" << i+2 << ": \n"; //start at time step 2
         simulateMinute(list);
     }
-
-    return 0;
-}
-
-void simLoop()
-{
-    
 }
 
 void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 {
+    //variables representing situations: 
+
+    int a = rand()%100 + 1, b = rand()%100 + 1, c = rand()%100 + 1, d = rand()%100 + 1, e = rand()%100 + 1; //probabilities for each minute should are independent. 
+    // A customer being helped at the beginning of the line and ordering their coffee is 40%
+    if(a <= 40)
+        list.pop_front(); //help first customer
+
+    // A new customer joining the end of the line is 60%
+    if(b <= 60) //new customer joins
+        list.push_back(getName()); 
+
+    // The customer at the end of the line deciding they don't want to wait and leaving is 20%
+    if(c <= 20)
+        
+
+    // Any particular customer can decide they don't want to wait and leave the line: 10%
+
+
+    // A VIP (very important person) customer with a Coffee House Gold Card gets to skip the line and go straight to the counter and order: 10%
+
+
 }
 
 string getName() // gets a random name from the txt file
