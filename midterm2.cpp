@@ -10,18 +10,40 @@ class DoublyLinkedList
 private:
     struct Customer
     {
-        //fields of customer
-        int data;
+        // fields of customer
+        string name;
 
         Customer *prev;
         Customer *next;
 
-        //constructor
-        Customer(int val, Customer *p = nullptr, Customer *n = nullptr)
+        // constructor
+        Customer(string s, Customer *p = nullptr, Customer *n = nullptr)
         {
-            data = val;
+            name = s; // take in string name as parameter
             prev = p;
             next = n;
+
+            cout << name << " joined the line";
+        }
+
+        //default constructor
+        Customer()
+        {
+            string buf; 
+            ifstream in("names.txt"); //open names.txt file
+            if(!in.good())
+            {
+                cout << "ERROR opening text file to read names in.";
+            }
+            else
+            {
+                int randName = (rand()%99)+1; //
+            }
+            name = s; // take in string name as parameter
+            prev = nullptr;
+            next = nullptr;
+
+            cout << name << " joined the line";
         }
     };
 
@@ -70,14 +92,14 @@ public:
         temp->next = newCustomer;
     }
 
-    void delete_val(int value)
+    void delete_name(string n)
     {
         if (!head)
             return;
 
         Customer *temp = head;
 
-        while (temp && temp->data != value)
+        while (temp && temp->name != n)
             temp = temp->next;
 
         if (!temp)
@@ -140,9 +162,9 @@ public:
         delete temp;
     }
 
-    void push_back(int v)
+    void push_back(string s)
     {
-        Customer *newCustomer = new Customer(v);
+        Customer *newCustomer = new Customer(s); // make customer with string for name
         if (!tail)
             head = tail = newCustomer;
         else
@@ -153,9 +175,9 @@ public:
         }
     }
 
-    void push_front(int v)
+    void push_front(string s)
     {
-        Customer *newCustomer = new Customer(v);
+        Customer *newCustomer = new Customer(s);
         if (!head)
             head = tail = newCustomer;
         else
@@ -225,13 +247,13 @@ public:
         }
         while (current)
         {
-            cout << current->data << " ";
+            cout << '\t' << current->name << '\n'; // print out all names of people in line, seperated by newlines
             current = current->next;
         }
         cout << endl;
     }
 
-    void print_reverse()
+    void print_reverse() // if needed
     {
         Customer *current = tail;
         if (!current)
@@ -241,36 +263,38 @@ public:
         }
         while (current)
         {
-            cout << current->data << " ";
+            cout << '\t' << current->name << '\n';
             current = current->prev;
         }
         cout << endl;
     }
 };
 
-//prototypes
+// prototypes
 void simulateMinute(DoublyLinkedList);
-
 
 int main()
 {
-    //my code
-    const int MINUTES = 20; //20 loops "minutes"
+    // my code
+    const int MINUTES = 20, INITIAL_CUSTOMERS = 5; // 20 loops "minutes"
     srand(time(0));
 
-    DoublyLinkedList list; //intialize doubly-linked list
-    list.push_front(3); //value for customer
+    DoublyLinkedList list; // intialize doubly-linked list
 
-    for(int i = 0; i < MINUTES; i++)
+    for (int i = 0; i < INITIAL_CUSTOMERS; i++) // when starting, fill with 5 initial customers
+        list.push_back();
+
+    cout << "Resulting line: ";
+    list.print();
+
+    for (int i = 0; i < MINUTES; i++)
     {
         simulateMinute(list);
     }
 
-
     return 0;
 }
 
-void simulateMinute(DoublyLinkedList list) //simulates one "minute run"
+void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 {
-    list.print(); //test
 }
