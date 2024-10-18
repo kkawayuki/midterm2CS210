@@ -189,7 +189,7 @@ public:
 
     void push_front(string s)
     {
-        Customer *newCustomer = new Customer(s); //handles message for customer joining line
+        Customer *newCustomer = new Customer(s); // handles message for customer joining line
         if (!head)
             head = tail = newCustomer;
         else
@@ -203,7 +203,6 @@ public:
 
     void pop_front()
     {
-
         if (!head)
         {
             cout << "List is empty." << endl;
@@ -220,8 +219,8 @@ public:
         }
         else
             head = tail = nullptr;
-        
-        delete temp;
+
+        delete temp; //doesn't seem to be reflected in program
         dllSize--;
     }
 
@@ -242,7 +241,7 @@ public:
         }
         else
             head = tail = nullptr;
-        
+
         delete temp;
         dllSize--;
     }
@@ -291,8 +290,8 @@ public:
 };
 
 // prototypes
-void simLoop(DoublyLinkedList);
-void simulateMinute(DoublyLinkedList);
+void simLoop(DoublyLinkedList &);
+void simulateMinute(DoublyLinkedList &);
 string randName();
 
 // main***********************************
@@ -306,7 +305,7 @@ int main()
     return 0;
 }
 
-void simLoop(DoublyLinkedList list)
+void simLoop(DoublyLinkedList &list) //pass by reference to modify list 
 {
     const int MINUTES = 20, INITIAL_CUSTOMERS = 5; // 20 loops "minutes"
 
@@ -328,7 +327,7 @@ void simLoop(DoublyLinkedList list)
     }
 }
 
-void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
+void simulateMinute(DoublyLinkedList &list) // simulates one "minute run"
 {
     // independent variables representing situations (there's probably a better way to do this):
     int a = rand() % 100 + 1, // probabilities for each minute should are independent.
@@ -359,7 +358,7 @@ void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
         list.push_front(randName() + " (VIP)"); // add to front, concatenate name to reflect status
 }
 
-string randName() // gets a random name from the txt file
+string randName() // function gets a random name from the txt file
 {
     string buf;
     ifstream in("names.txt"); // open names.txt file
