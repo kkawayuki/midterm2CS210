@@ -4,6 +4,7 @@
 using namespace std;
 
 const int MIN_NR = 10, MAX_NR = 99, MIN_LS = 5, MAX_LS = 20;
+int dllSize = 0; //global tracker for size of Doubly Linked, could also be represented as static var
 
 class DoublyLinkedList
 {
@@ -26,38 +27,40 @@ private:
             cout << '\t' << name << " joined the line\n";
         }
 
-        // default constructor
-        Customer()
-        {
-            ifstream in("names.txt"); // open names.txt file
-            if (!in.good())
-            {
-                cout << "ERROR opening text file to read names in.";
-            }
-            else
-            {
-                int randName = (rand() % 99); // generate random 0-98 int number to ignore in txt file
-                for (int i = 0; i < randName; i++)
-                    in.ignore(100, '\n');
-                getline(in, name); // get string name after random ignore, assign directly to Customer
-            }
+        // // default constructor
+        // Customer()
+        // {
+        //     ifstream in("names.txt"); // open names.txt file
+        //     if (!in.good())
+        //     {
+        //         cout << "ERROR opening text file to read names in.";
+        //     }
+        //     else
+        //     {
+        //         int randName = (rand() % 99); // generate random 0-98 int number to ignore in txt file
+        //         for (int i = 0; i < randName; i++)
+        //             in.ignore(100, '\n');
+        //         getline(in, name); // get string name after random ignore, assign directly to Customer
+        //     }
 
-            prev = nullptr;
-            next = nullptr;
+        //     prev = nullptr;
+        //     next = nullptr;
 
-            cout << name << " joined the line";
-        }
+        //     cout << name << " joined the line";
+        // }
     };
-
     Customer *head;
     Customer *tail;
 
 public:
     DoublyLinkedList()
     {
+        dllSize = 0;
         head = nullptr;
         tail = nullptr;
     }
+
+    int getDllSize() { return (dllSize); } // getter function for number of customers
 
     void insert_after(string s, int position)
     {
@@ -71,6 +74,7 @@ public:
         if (!head)
         {
             head = tail = newCustomer;
+            dllSize++;
             return;
         }
 
@@ -92,6 +96,7 @@ public:
         else
             tail = newCustomer;
         temp->next = newCustomer;
+        dllSize++;
     }
 
     void delete_name(string n)
@@ -118,6 +123,7 @@ public:
             tail = temp->prev;
 
         delete temp;
+        dllSize--;
     }
 
     void delete_pos(int pos)
@@ -131,6 +137,7 @@ public:
         if (pos == 1)
         {
             pop_front();
+            dllSize--;
             return;
         }
 
@@ -155,6 +162,7 @@ public:
         if (!temp->next)
         {
             pop_back();
+            dllSize--;
             return;
         }
 
@@ -162,6 +170,7 @@ public:
         tempPrev->next = temp->next;
         temp->next->prev = tempPrev;
         delete temp;
+        dllSize--;
     }
 
     void push_back(string s)
@@ -175,7 +184,8 @@ public:
             newCustomer->prev = tail;
             tail = newCustomer;
         }
-        cout << s << " joined the line"; 
+        cout << s << " joined the line";
+        dllSize++;
     }
 
     void push_front(string s)
@@ -189,6 +199,7 @@ public:
             head->prev = newCustomer;
             head = newCustomer;
         }
+        dllSize++;
     }
 
     void pop_front()
@@ -209,8 +220,9 @@ public:
         }
         else
             head = tail = nullptr;
-        cout << temp->name << " is served"; 
+        cout << temp->name << " is served";
         delete temp;
+        dllSize--;
     }
 
     void pop_back()
@@ -229,7 +241,9 @@ public:
         }
         else
             head = tail = nullptr;
+        cout << temp->name << " left the line";
         delete temp;
+        dllSize--;
     }
 
     ~DoublyLinkedList()
@@ -241,6 +255,7 @@ public:
             delete temp;
         }
     }
+
     void print()
     {
         Customer *current = head;
@@ -277,7 +292,7 @@ public:
 // prototypes
 void simLoop(DoublyLinkedList);
 void simulateMinute(DoublyLinkedList);
-string getName();
+string randName();
 
 // main***********************************
 int main()
@@ -297,44 +312,45 @@ void simLoop(DoublyLinkedList list)
     cout << "Store opens: \n"; // begin application
 
     for (int i = 0; i < INITIAL_CUSTOMERS; i++) // when starting, fill with 5 initial customers
-        list.push_back(getName());
+        list.push_back(randName());
 
     cout << "Resulting line: \n";
     list.print();
 
-    for (int i = 0; i < MINUTES; i++)
-    {
-        cout << "Time step #" << i+2 << ": \n"; //start at time step 2
-        simulateMinute(list);
-    }
+    cout << "size: " << dllSize; 
+
+    // for (int i = 0; i < MINUTES; i++)
+    // {
+    //     cout << "Time step #" << i+2 << ": \n"; //start at time step 2
+    //     simulateMinute(list);
+    // }
 }
 
 void simulateMinute(DoublyLinkedList list) // simulates one "minute run"
 {
-    //variables representing situations: 
+    // variables representing situations:
 
-    int a = rand()%100 + 1, b = rand()%100 + 1, c = rand()%100 + 1, d = rand()%100 + 1, e = rand()%100 + 1; //probabilities for each minute should are independent. 
+    int a = rand() % 100 + 1, b = rand() % 100 + 1, c = rand() % 100 + 1, d = rand() % 100 + 1, e = rand() % 100 + 1; // probabilities for each minute should are independent.
     // A customer being helped at the beginning of the line and ordering their coffee is 40%
-    if(a <= 40)
-        list.pop_front(); //help first customer
+    if (a <= 40)
+        list.pop_front(); // help first customer
 
     // A new customer joining the end of the line is 60%
-    if(b <= 60) //new customer joins
-        list.push_back(getName()); 
+    if (b <= 60) // new customer joins
+        list.push_back(randName());
 
     // The customer at the end of the line deciding they don't want to wait and leaving is 20%
-    if(c <= 20)
-        
+    if (c <= 20)
+        list.pop_back();
 
     // Any particular customer can decide they don't want to wait and leave the line: 10%
-
+    if (d <= 10)
+        list.delete_pos(0);
 
     // A VIP (very important person) customer with a Coffee House Gold Card gets to skip the line and go straight to the counter and order: 10%
-
-
 }
 
-string getName() // gets a random name from the txt file
+string randName() // gets a random name from the txt file
 {
     string buf;
     ifstream in("names.txt"); // open names.txt file
